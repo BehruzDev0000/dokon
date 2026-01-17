@@ -55,12 +55,15 @@ export class ProductsService {
       if(!product){
         throw new NotFoundException('Product not found')
       }
-      const category=await this.categoryModel.findOne({where:{id:updateProductDto.categoryId}})
-     if(!category){
-      throw new NotFoundException('Category not found')
-     }
-      const updatedCategory=await this.productModel.update({...updateProductDto},{where:{id},returning:true})
-      return successResponse(updatedCategory)
+      if (updateProductDto.categoryId !== undefined) {
+        const category=await this.categoryModel.findOne({where:{id:updateProductDto.categoryId}})
+        if(!category){
+          throw new NotFoundException('Category not found')
+        }
+      }
+      await this.productModel.update({...updateProductDto},{where:{id}})
+      const updatedProduct = await this.productModel.findOne({where:{id},include:{all:true}})
+      return successResponse(updatedProduct)
     } catch (error) {
       handleError(error)
     }
@@ -72,7 +75,7 @@ export class ProductsService {
       if(!product){
         throw new NotFoundException('Product not found')
       }
-      await this.categoryModel.destroy({where:{id}})
+      await this.productModel.destroy({where:{id}})
       return successResponse({message:'Product deleted'})
     } catch (error) {
       handleError(error)
