@@ -50,11 +50,7 @@ export class CategoriesService {
       if(!category){
         throw new NotFoundException('Category not found')
       }
-      const updatedcategory=await category.update(updateCategoryDto,
-        {
-          where:{id},
-          returning:true
-        })
+      const updatedcategory=await category.update(updateCategoryDto)
       return successResponse(updatedcategory)
     } catch (error) {
       handleError(error)

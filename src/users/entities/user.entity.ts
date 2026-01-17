@@ -21,7 +21,6 @@ export class User extends Model{
     @Column({
         type:DataType.STRING,
         allowNull:false,
-        primaryKey:true,
         unique:true
     })
     declare username:string
